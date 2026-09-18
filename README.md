@@ -1,7 +1,7 @@
 # WRO Future Engineers 2026 — Engineering Documentation
 **Team Name:** Jawatha Fighters  
 **Robot Name:** Sensoria  
-**Country/Region:** Saudi Arabia  
+**Region:** AlAhsa
 
 ---
 
