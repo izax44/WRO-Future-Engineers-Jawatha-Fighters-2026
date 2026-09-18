@@ -31,7 +31,7 @@ Sensoria utilizes a 100% custom 3D-printed chassis rather than an off-the-shelf 
 * **Dimensions:** 210 mm (L) × 145 mm (W) × 110 mm (H)
 * **Primary Material:** PLA+ (Polylactic Acid Plus) for high impact resistance and minimal thermal warping.
 * **Bare Frame Mass:** ~185 grams
-* **Fully Assembled Vehicle Mass:** ~520 grams (including motor drive, power supply, and electronics)
+* **Fully Assembled Vehicle Mass:** ~1000 grams (including motor drive, power supply, and electronics)
 
 ### Empirically Tested Design Tradeoffs
 * **Stability vs. Weight:** Lowering the battery mounting tray by 12 mm into a recessed bottom pocket added 15 grams of chassis material, but significantly dropped our center of gravity. This eliminated chassis roll and cornering tip-overs during high-speed turns.
