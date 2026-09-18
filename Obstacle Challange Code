@@ -118,6 +118,7 @@ void RedControl() {
   digitalWrite(in2, LOW);
 }
 
+
 // Speed Control Function
 void speedControl() {
   digitalWrite(in1, LOW);
