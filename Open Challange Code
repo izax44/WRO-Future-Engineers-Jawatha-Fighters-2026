@@ -1,0 +1,49 @@
+#include <Servo.h>  // Include the Servo library for controlling servo motors
+
+Servo servo1; // Create a Servo object named servo1
+
+// Pin Definitions
+int servoPin = 6; // Pin number for the servo
+int enA = 9;      // Motor enable pin for speed control
+int in1 = 8;      // Motor input pin 1 for direction control
+int in2 = 7;      // Motor input pin 2 for direction control
+
+int i = 0; // Counter variable for loops
+int x = 0; // Counter variable for loops
+int y = 0; // Counter variable for loops
+int z = 0; // Counter variable for loops
+
+// Setup Function
+void setup() {
+  Serial.begin(9600);         // Start serial communication at 9600 baud rate
+  Serial.print("starting...\n"); // Print starting message to serial monitor
+  servo1.attach(servoPin);    // Attach the servo to the specified pin
+  servo1.write(0);           // Set the initial position of the servo
+
+  // Set motor control pins as outputs
+  pinMode(enA, OUTPUT);
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  
+  // Turn off motors initially
+  digitalWrite(in1, LOW);
+  digitalWrite(in2, LOW);
+}
+
+// Main Loop
+void loop() {
+  for (x = 0; x < 3; x++) { // Loop to execute the following block three times
+    for (i = 0; i < 3; i++) { // Loop to execute the following block three times
+      servo1.write(-40);      // Set the servo position
+      delay(500); // Wait for 0.5 seconds
+      digitalWrite(in1, HIGH);
+      digitalWrite(in2, HIGH); // Turn on the motors
+      delay(1000); // Run motors for 1 second
+      servo1.write(0); // Reset servo position
+      delay(500); // Wait for 0.5 seconds
+      digitalWrite(in1, HIGH);
+      digitalWrite(in2, HIGH); // Turn on the motors again
+      delay(1000); // Wait before the next loop iteration
+    }
+  }
+}
