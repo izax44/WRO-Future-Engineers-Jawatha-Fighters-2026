@@ -1,7 +1,7 @@
 #include <xmotion.h>
 #include <Pixy2.h>
 #include <Servo.h>
-
+ 
 Pixy2 pixy;
 Servo steering;
 
