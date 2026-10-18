@@ -1,4 +1,4 @@
-# 🚀 WRO 2026 Future Engineers – Jawatha Fighters
+#  WRO 2026 Future Engineers – Jawatha Fighters
 
 <div align="center">
 
@@ -11,9 +11,9 @@
 
 ---
 
-## 🏆 **SAUDI NATIONAL QUALIFIERS – JAWATHA FIGHTERS TEAM NO. 5565**
+##  **SAUDI NATIONAL QUALIFIERS – JAWATHA FIGHTERS TEAM NO. 5565**
 
-Welcome to the GitHub repository of **Team Jawatha Fighters**, competing in the **World Robot Olympiad™ (WRO®) Future Engineers 2026** category. We are a team of students from **Al-Ahsa, Saudi Arabia**, who designed **Sensoria** — a fully custom, autonomous self-driving vehicle built from the ground up for the WRO 2026 challenges. Named after the historic palm groves of our region, our robot combines custom 3D-printed mechanics, modular electronics, and robust control software into one integrated system.
+Welcome to the GitHub repository of **Team Jawatha Fighters**, competing in the **World Robot Olympiad™ (WRO®) Future Engineers 2026** category. We are a team of students from **Al-Ahsa, Saudi Arabia**, who built a fully custom, autonomous self-driving vehicle built from the ground up for the WRO 2026 challenges. Named after the historic palm groves of our region, our robot combines custom 3D-printed mechanics, modular electronics, and robust control software into one integrated system.
 
 **Team No.:** 5565 | **Region:** Al-Ahsa, Saudi Arabia | **Achievement:** Saudi National Qualifiers
 
@@ -22,29 +22,29 @@ Performance demonstrations:
 - **Obstacle Challenge** – [Watch on YouTube](https://youtu.be/hbKiM2jCgEo)
 
 <div align="center">
-<img src="v-photos/v3 Front View.jpeg" alt="Sensoria – Front View" width="600">
+<img src="v-photos/v3 Front View.jpeg" alt="Final design – Front View" width="600">
 </div>
 
 ---
 
-## 📚 **Table of Contents**
-- [📂 Repository Structure](#-repository-structure)
-- [👥 The Team](#-the-team)
-- [🎯 Challenge Overview](#-challenge-overview)
-- [🤖 Our Robot](#-our-robot)
-- [🔧 Electronic Systems](#-electronic-systems)
-- [⚙ Mechanical Systems](#-mechanical-systems)
-- [💻 Software Architecture](#-software-architecture)
-- [📹 Performance Videos](#-performance-videos)
-- [📜 License](#-license)
+##  **Table of Contents**
+- [ Repository Structure](#-repository-structure)
+- [ The Team](#-the-team)
+- [ Challenge Overview](#-challenge-overview)
+- [ Our Robot](#-our-robot)
+- [ Electronic Systems](#-electronic-systems)
+- [ Mechanical Systems](#-mechanical-systems)
+- [ Software Architecture](#-software-architecture)
+- [ Performance Videos](#-performance-videos)
+- [ License](#-license)
 
 ---
 
-## 📂 **Repository Structure** <a id="repository-structure"></a>
+##  **Repository Structure** <a id="repository-structure"></a>
 
 <div align="center">
 
-| 📁 Folder | Contents |
+|  Folder | Contents |
 |-----------|----------|
 | **`src/`** | Main competition code (Open & Obstacle challenges), flowcharts, and sensor test sketches in `src/tests/` |
 | **`schemes/`** | Full wiring diagram of all electrical connections ([wiring diagram.pdf](schemes/wiring%20diagram.pdf)) |
@@ -59,7 +59,7 @@ Performance demonstrations:
 
 ---
 
-## 👥 **The Team** <a id="the-team"></a>
+##  **The Team** <a id="the-team"></a>
 
 Team Jawatha Fighters is made up of two high-school students from Al-Ahsa, guided by a coach with a background in AI and robotics.
 
@@ -79,15 +79,15 @@ Team Jawatha Fighters is made up of two high-school students from Al-Ahsa, guide
 
 ---
 
-## 🎯 **Challenge Overview** <a id="challenge-overview"></a>
+##  **Challenge Overview** <a id="challenge-overview"></a>
 
 <div align="center">
 
-## 🏁 **WRO 2026 Future Engineers – Two Autonomous Challenges**
+##  **WRO 2026 Future Engineers – Two Autonomous Challenges**
 
 </div>
 
-### **🚀 Open Challenge**
+### ** Open Challenge**
 Complete **three autonomous laps** on a walled track whose internal walls are re-arranged between rounds.
 
 | Aspect | Challenge | Our Solution |
@@ -96,7 +96,7 @@ Complete **three autonomous laps** on a walled track whose internal walls are re
 | **Navigation** | Unknown number/position of corners | Front ultrasonic corner detection + timed turns |
 | **Precision** | Consistent distance from walls | P-controlled wall following (target 25 cm) |
 
-### **🚧 Obstacle Challenge**
+### ** Obstacle Challenge**
 Complete **three laps** while reacting to red and green traffic pillars, choosing the correct passing side:
 - **Red pillar** → robot must pass on its **right**
 - **Green pillar** → robot must pass on its **left**
@@ -105,9 +105,9 @@ Complete **three laps** while reacting to red and green traffic pillars, choosin
 
 ---
 
-## 🤖 **Our Robot** <a id="our-robot"></a>
+##  **Our Robot** <a id="our-robot"></a>
 
-**Sensoria** is built around a fully custom 3D-printed chassis — no off-the-shelf frame — designed in Fusion 360 and printed in PLA+.
+Our robot is built around a fully custom 3D-printed chassis — no off-the-shelf frame — designed in Fusion 360 and printed in PLA+.
 
 **Core specifications:**
 - **Dimensions:** 154.7 mm (L) × 120.1 mm (W) × 133.1 mm (H)
@@ -118,7 +118,7 @@ Complete **three laps** while reacting to red and green traffic pillars, choosin
 <div align="center">
 <img src="v-photos/v3 Front View.jpeg" alt="Front View" width="300">
 <img src="v-photos/v3 Left View.jpeg" alt="Left View" width="300">
-<p><em>Sensoria v3 – final competition configuration</em></p>
+<p><em>  Robot final competition configuration</em></p>
 </div>
 
 ### Processing & Perception
@@ -131,7 +131,7 @@ Complete **three laps** while reacting to red and green traffic pillars, choosin
 
 ---
 
-## 🔧 **Electronic Systems** <a id="electronic-systems"></a>
+##  **Electronic Systems** <a id="electronic-systems"></a>
 
 Our electronics are built around the **XMotion V3** controller, which integrates the Arduino Leonardo-compatible microcontroller and dual motor drivers on a single board — no separate motor driver module is needed.
 
@@ -151,7 +151,7 @@ Our electronics are built around the **XMotion V3** controller, which integrates
 
 </div>
 
-> 📄 **Every component datasheet is available in the [`datasheets/`](datasheets) folder.**
+>  **Every component datasheet is available in the [`datasheets/`](datasheets) folder.**
 
 ### **Wiring**
 The complete electrical layout — every connection between the controller, sensors, camera, servo, motor, and battery — is documented in the [full wiring diagram](schemes/wiring%20diagram.pdf).
@@ -163,9 +163,9 @@ The complete electrical layout — every connection between the controller, sens
 
 ---
 
-## ⚙ **Mechanical Systems** <a id="mechanical-systems"></a>
+##  **Mechanical Systems** <a id="mechanical-systems"></a>
 
-Sensoria evolved through **three prototype generations**, each fixing a measured problem:
+The robot evolved through **three prototype generations**, each fixing a measured problem:
 
 | Iteration | Problem Found | Fix Applied |
 |-----------|---------------|-------------|
@@ -189,7 +189,7 @@ Sensoria evolved through **three prototype generations**, each fixing a measured
 <td align="center" width="33%">
 <img src="v-photos/v3 Panned out View.jpeg" alt="Design v3 – Final Competition Robot" width="100%">
 <strong>Design v3 – Final Competition Robot</strong><br>
-<em>Dual-braced camera mount fixed vision vibration; final competition configuration of Sensoria.</em>
+<em>Dual-braced camera mount fixed vision vibration; final competition configuration of our robot</em>
 </td>
 </tr>
 </table>
@@ -210,7 +210,7 @@ Sensoria evolved through **three prototype generations**, each fixing a measured
 
 ---
 
-## 💻 **Software Architecture** <a id="software-architecture"></a>
+##  **Software Architecture** <a id="software-architecture"></a>
 
 All software is written in **Arduino C++** and runs on the XMotion V3's ATmega32U4. Upload is done over USB with the Arduino IDE (board: Arduino Leonardo).
 
@@ -253,26 +253,12 @@ All software is written in **Arduino C++** and runs on the XMotion V3's ATmega32
 
 ---
 
-## 📹 **Performance Videos** <a id="performance-videos"></a>
-
-<div align="center">
-
-[![Open Challenge](https://img.youtube.com/vi/fPB93x9pTxI/0.jpg)](https://youtu.be/fPB93x9pTxI)
-[![Obstacle Challenge](https://img.youtube.com/vi/hbKiM2jCgEo/0.jpg)](https://youtu.be/hbKiM2jCgEo)
-
-**Open Challenge** – autonomous navigation on a randomized track
-**Obstacle Challenge** – red/green pillar detection and avoidance
-
-</div>
-
----
-
-## 📜 **License** <a id="license"></a>
+##  **License** <a id="license"></a>
 
 This project is open for educational and competition use. Feel free to study, replicate, and build upon our work — just credit Team Jawatha Fighters.
 
 <div align="center">
 
-## 🎯 **Team Jawatha Fighters – Team 5565 – Al-Ahsa, Saudi Arabia**
+##  **Team Jawatha Fighters – Team 5565 – Al-Ahsa, Saudi Arabia**
 
 </div>
