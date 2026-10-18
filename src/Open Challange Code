@@ -1,49 +1,144 @@
-#include <Servo.h>  // Include the Servo library for controlling servo motors
 
-Servo servo1; // Create a Servo object named servo1
+#include <Servo.h>
 
-// Pin Definitions
-int servoPin = 6; // Pin number for the servo
-int enA = 9;      // Motor enable pin for speed control
-int in1 = 8;      // Motor input pin 1 for direction control
-int in2 = 7;      // Motor input pin 2 for direction control
 
-int i = 0; // Counter variable for loops
-int x = 0; // Counter variable for loops
-int y = 0; // Counter variable for loops
-int z = 0; // Counter variable for loops
+const int MOTOR_PWM = 10;
+const int MOTOR_DIR = 12;
+const int SERVO_PIN = 4;
 
-// Setup Function
-void setup() {
-  Serial.begin(9600);         // Start serial communication at 9600 baud rate
-  Serial.print("starting...\n"); // Print starting message to serial monitor
-  servo1.attach(servoPin);    // Attach the servo to the specified pin
-  servo1.write(0);           // Set the initial position of the servo
+const int TRIG_L = 5;
+const int ECHO_L = 6;
+const int TRIG_C = 0;
+const int ECHO_C = 1;
+const int TRIG_R = A2;
+const int ECHO_R = A1;
 
-  // Set motor control pins as outputs
-  pinMode(enA, OUTPUT);
-  pinMode(in1, OUTPUT);
-  pinMode(in2, OUTPUT);
-  
-  // Turn off motors initially
-  digitalWrite(in1, LOW);
-  digitalWrite(in2, LOW);
+
+const int SERVO_CENTER = 90;
+const int SERVO_LEFT   = 60;
+const int SERVO_RIGHT  = 120;
+
+const int CRUISE_SPEED = 100;  
+const int TURN_SPEED   = 80;
+
+const int CORNER_DISTANCE = 45;  
+const int TURN_EXIT_DISTANCE = 70;
+const unsigned long TURN_MIN_MS = 500;
+const unsigned long TURN_MAX_MS = 2500;
+
+const float WALL_TARGET = 25.0;   
+const float KP = 0.8;           
+const int MAX_TRIM = 20;        
+
+const int TOTAL_CORNERS = 12;   
+const unsigned long FINISH_MS = 1500;  
+
+Servo steering;
+
+enum State { DRIVE, TURN, STOPPED };
+State state = DRIVE;  
+
+int dir = 0;            
+int corners = 0;
+unsigned long turnStart = 0;
+unsigned long finishStart = 0;
+
+
+float readDistance(int trigPin, int echoPin) {
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(3);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  unsigned long duration = pulseIn(echoPin, HIGH, 18000);
+  if (duration == 0) return -1;   
+  return duration * 0.0343 / 2.0;
 }
 
-// Main Loop
+void setMotor(int speedValue) {
+  digitalWrite(MOTOR_DIR, HIGH);
+  analogWrite(MOTOR_PWM, constrain(speedValue, 0, 255));
+}
+
+void stopMotor() {
+  analogWrite(MOTOR_PWM, 0);
+}
+
+void setSteering(int angle) {
+  steering.write(constrain(angle, SERVO_LEFT, SERVO_RIGHT));
+}
+
+
+void setup() {
+  pinMode(MOTOR_PWM, OUTPUT);
+  pinMode(MOTOR_DIR, OUTPUT);
+  pinMode(TRIG_L, OUTPUT);
+  pinMode(ECHO_L, INPUT);
+  pinMode(TRIG_C, OUTPUT);
+  pinMode(ECHO_C, INPUT);
+  pinMode(TRIG_R, OUTPUT);
+  pinMode(ECHO_R, INPUT);
+
+  steering.attach(SERVO_PIN);
+  setSteering(SERVO_CENTER);
+  stopMotor();
+
+}
+
+
 void loop() {
-  for (x = 0; x < 3; x++) { // Loop to execute the following block three times
-    for (i = 0; i < 3; i++) { // Loop to execute the following block three times
-      servo1.write(-40);      // Set the servo position
-      delay(500); // Wait for 0.5 seconds
-      digitalWrite(in1, HIGH);
-      digitalWrite(in2, HIGH); // Turn on the motors
-      delay(1000); // Run motors for 1 second
-      servo1.write(0); // Reset servo position
-      delay(500); // Wait for 0.5 seconds
-      digitalWrite(in1, HIGH);
-      digitalWrite(in2, HIGH); // Turn on the motors again
-      delay(1000); // Wait before the next loop iteration
-    }
+  if (state == STOPPED) {
+    stopMotor();
+    setSteering(SERVO_CENTER);
+    return;
   }
+
+  float left  = readDistance(TRIG_L, ECHO_L);
+  float front = readDistance(TRIG_C, ECHO_C);
+  float right = readDistance(TRIG_R, ECHO_R);
+
+  
+  if (front < 0) {
+    stopMotor();
+    return;
+  }
+
+  
+  if (state == TURN) {
+    setSteering(dir == 1 ? SERVO_RIGHT : SERVO_LEFT);
+    setMotor(TURN_SPEED);
+
+    unsigned long t = millis() - turnStart;
+    if ((t >= TURN_MIN_MS && front > TURN_EXIT_DISTANCE) || t >= TURN_MAX_MS) {
+      corners++;
+      state = DRIVE;
+      if (corners == TOTAL_CORNERS) finishStart = millis();
+    }
+    return;
+  }
+
+  
+  if (corners >= TOTAL_CORNERS) {
+    if (millis() - finishStart >= FINISH_MS) state = STOPPED;
+  }
+ 
+  else if (front < CORNER_DISTANCE) {
+    if (dir == 0) dir = (left > right) ? -1 : 1;  
+    turnStart = millis();
+    state = TURN;
+    return;
+  }
+
+  
+  float wall = (dir == 1) ? left : right;
+
+  if (dir == 0 || wall < 0) {
+    setSteering(SERVO_CENTER);
+  } else {
+    int trim = constrain((int)(KP * (wall - WALL_TARGET)), -MAX_TRIM, MAX_TRIM);
+    setSteering(SERVO_CENTER - dir * trim);
+  }
+
+  setMotor(CRUISE_SPEED);
 }
