@@ -1,142 +1,192 @@
-#include <Servo.h>  // Include the Servo library for controlling servo motors
-#include <Pixy2.h>  // Include the Pixy2 library for color detection
 
-// Object Creation
-Pixy2 pixy;  // Create a Pixy2 object for accessing the camera
-Servo servo1; // Create a Servo object named servo1
+#include <Wire.h>
+#include <Servo.h>
+#include <Pixy2.h>
 
-// Pin Definitions
-int servoPin = 6; // Pin number for the servo
-int enA = 9;      // Motor enable pin for speed control
-int in1 = 8;      // Motor input pin 1 for direction control
-int in2 = 7;      // Motor input pin 2 for direction control
 
-int i = 0; // Counter variable for loops
-int y = 0; // Counter variable for loops
+const int MOTOR_PWM = 10;
+const int MOTOR_DIR = 12;
+const int SERVO_PIN = 4;
 
-// Setup Function
+const int TRIG_L = 5;
+const int ECHO_L = 6;
+const int TRIG_C = 0;
+const int ECHO_C = 1;
+const int TRIG_R = A2;
+const int ECHO_R = A1;
+
+
+const int SERVO_CENTER = 90;
+const int SERVO_LEFT   = 60;
+const int SERVO_RIGHT  = 120;
+
+const int CRUISE_SPEED = 100;  
+const int SLOW_SPEED   = 75;
+const int TURN_SPEED   = 80;
+
+const int CORNER_DISTANCE = 45;
+const int TURN_EXIT_DISTANCE = 70;
+const unsigned long TURN_MIN_MS = 500;
+const unsigned long TURN_MAX_MS = 2500;
+
+const float WALL_TARGET = 30.0;
+const float KP = 0.8;
+const int MAX_TRIM = 20;
+
+const int TOTAL_CORNERS = 12;
+const unsigned long FINISH_MS = 1500;
+
+const int RED_SIGNATURE = 1;
+const int GREEN_SIGNATURE = 2;
+
+const int RED_TARGET_X   = 70;
+const int GREEN_TARGET_X = 246;  
+const float PIXY_KP = 0.3;        
+const int MIN_PILLAR_HEIGHT = 12; 
+
+Servo steering;
+Pixy2I2C pixy;
+
+enum State { DRIVE, TURN, STOPPED };
+State state = DRIVE;   
+
+int dir = 0;              
+int corners = 0;
+unsigned long turnStart = 0;
+unsigned long finishStart = 0;
+
+
+float readDistance(int trigPin, int echoPin) {
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(3);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  unsigned long duration = pulseIn(echoPin, HIGH, 18000);
+  if (duration == 0) return -1;   
+  return duration * 0.0343 / 2.0;
+}
+
+void setMotor(int speedValue) {
+  digitalWrite(MOTOR_DIR, HIGH); 
+  analogWrite(MOTOR_PWM, constrain(speedValue, 0, 255));
+}
+
+void stopMotor() {
+  analogWrite(MOTOR_PWM, 0);
+}
+
+void setSteering(int angle) {
+  steering.write(constrain(angle, SERVO_LEFT, SERVO_RIGHT));
+}
+
+
+bool steerAroundPillar() {
+  pixy.ccc.getBlocks();
+
+  int best = -1;
+  int bestHeight = MIN_PILLAR_HEIGHT - 1;
+
+  for (int i = 0; i < pixy.ccc.numBlocks; i++) {
+    int sig = pixy.ccc.blocks[i].m_signature;
+    int h = pixy.ccc.blocks[i].m_height;
+
+    if ((sig == RED_SIGNATURE || sig == GREEN_SIGNATURE) && h > bestHeight) {
+      best = i;
+      bestHeight = h;
+    }
+  }
+
+  if (best < 0) return false;
+
+  int target = (pixy.ccc.blocks[best].m_signature == RED_SIGNATURE)
+                 ? RED_TARGET_X : GREEN_TARGET_X;
+
+
+  setSteering(SERVO_CENTER + (int)(PIXY_KP * (pixy.ccc.blocks[best].m_x - target)));
+  return true;
+}
+
+
 void setup() {
-  Serial.begin(9600);         // Start serial communication at 9600 baud rate
-  Serial.print("starting...\n"); // Print starting message to serial monitor
-  servo1.attach(servoPin);    // Attach the servo to the specified pin
-  servo1.write(85);           // Set the initial position of the servo
+  pinMode(MOTOR_PWM, OUTPUT);
+  pinMode(MOTOR_DIR, OUTPUT);
+  pinMode(TRIG_L, OUTPUT);
+  pinMode(ECHO_L, INPUT);
+  pinMode(TRIG_C, OUTPUT);
+  pinMode(ECHO_C, INPUT);
+  pinMode(TRIG_R, OUTPUT);
+  pinMode(ECHO_R, INPUT);
 
-  // Set motor control pins as outputs
-  pinMode(enA, OUTPUT);
-  pinMode(in1, OUTPUT);
-  pinMode(in2, OUTPUT);
-  
-  // Turn off motors initially
-  digitalWrite(in1, LOW);
-  digitalWrite(in2, LOW);
-  pixy.init();                // Initialize the Pixy camera
+  steering.attach(SERVO_PIN);
+  setSteering(SERVO_CENTER);
+  stopMotor();
+
+  Wire.begin();
+  pixy.init();
+
 }
 
-// Main Loop
+
 void loop() {
-  for (y = 0; y < 1; y++) { // Loop to execute the following block once
-    servo1.write(175);      // Set the servo position
-    delay(500); // Wait for 0.5 seconds
-    digitalWrite(in1, HIGH);
-    digitalWrite(in2, HIGH); // Turn on the motors
-    delay(1000); // Run motors for 1 second
-    servo1.write(85); // Reset servo position
-    delay(500); // Wait for 0.5 seconds
-    digitalWrite(in1, HIGH);
-    digitalWrite(in2, HIGH); // Turn on the motors again
+  if (state == STOPPED) {
+    stopMotor();
+    setSteering(SERVO_CENTER);
+    return;
+  }
 
-    // Check for detected color blocks
-    if (pixy.ccc.numBlocks > 0) {
-      // Control based on the signature of the detected block
-      if (pixy.ccc.blocks[0].m_signature == 1) {
-        RedControl();      // Call function to handle red block
-      } else if (pixy.ccc.blocks[0].m_signature == 2) {
-        BlueControl();     // Call function to handle blue block
-      }
-    } else {
-      Serial.println("No blocks detected"); // Print debug message if no blocks are found
+  float left  = readDistance(TRIG_L, ECHO_L);
+  float front = readDistance(TRIG_C, ECHO_C);
+  float right = readDistance(TRIG_R, ECHO_R);
+
+
+  if (front < 0) {
+    stopMotor();
+    return;
+  }
+
+
+  if (state == TURN) {
+    setSteering(dir == 1 ? SERVO_RIGHT : SERVO_LEFT);
+    setMotor(TURN_SPEED);
+
+    unsigned long t = millis() - turnStart;
+    if ((t >= TURN_MIN_MS && front > TURN_EXIT_DISTANCE) || t >= TURN_MAX_MS) {
+      corners++;
+      state = DRIVE;
+      if (corners == TOTAL_CORNERS) finishStart = millis();
     }
-    
-    speedControl(); // Call speed control function
-    pixy.ccc.getBlocks(); // Retrieve block data from the Pixy camera
-    delay(1000); // Wait before the next loop iteration
+    return;
   }
 
-  delay(1000); // Wait before the next loop iteration
 
-  for (i = 0; i < 3; i++) { // Loop to execute the following block three times
-    servo1.write(-5);      // Set the servo position
-    delay(500); // Wait for 0.5 seconds
-    digitalWrite(in1, HIGH);
-    digitalWrite(in2, HIGH); // Turn on the motors
-    delay(1000); // Run motors for 1 second
-    servo1.write(85); // Reset servo position
-    delay(500); // Wait for 0.5 seconds
-    digitalWrite(in1, HIGH);
-    digitalWrite(in2, HIGH); // Turn on the motors again
-
-    // Check for detected color blocks
-    if (pixy.ccc.numBlocks > 0) {
-      // Control based on the signature of the detected block
-      if (pixy.ccc.blocks[0].m_signature == 1) {
-        RedControl();      // Call function to handle red block
-      } else if (pixy.ccc.blocks[0].m_signature == 2) {
-        BlueControl();     // Call function to handle blue block
-      }
-    } else {
-      Serial.println("No blocks detected"); // Print debug message if no blocks are found
-    }
-
-    speedControl(); // Call speed control function
-    pixy.ccc.getBlocks(); // Retrieve block data from the Pixy camera
-    delay(1000); // Wait before the next loop iteration
-  }
-}
-
-// Control Functions
-void BlueControl() {
-  analogWrite(enA, 255); // Set motors to maximum speed
-  servo1.write(75);      // Adjust servo for blue control
-  digitalWrite(in1, LOW);
-  digitalWrite(in2, HIGH); // Set motor direction for blue block
-  delay(2000); // Run for 2 seconds
-
-  // Turn off motors after delay
-  digitalWrite(in1, LOW);
-  digitalWrite(in2, LOW);
-}
-
-void RedControl() {
-  analogWrite(enA, 255); // Set motors to maximum speed
-  servo1.write(95);      // Adjust servo for red control
-  digitalWrite(in1, HIGH);
-  digitalWrite(in2, LOW); // Set motor direction for red block
-  delay(2000); // Run for 2 seconds
-
-  // Turn off motors after delay
-  digitalWrite(in1, LOW);
-  digitalWrite(in2, LOW);
-}
-
-
-// Speed Control Function
-void speedControl() {
-  digitalWrite(in1, LOW);
-  digitalWrite(in2, HIGH); // Set direction for acceleration
-
-  // Accelerate from zero to maximum speed
-  for (int i = 0; i < 256; i++) {
-    analogWrite(enA, i);   // Increase speed gradually
-    delay(20);             // Small delay to allow for smooth acceleration
-  }
-  
-  // Decelerate from maximum speed to zero
-  for (int i = 255; i >= 0; --i) {
-    analogWrite(enA, i);   // Decrease speed gradually
-    delay(20);             // Small delay to allow for smooth deceleration
+  if (corners < TOTAL_CORNERS && steerAroundPillar()) {
+    setMotor(SLOW_SPEED);
+    return;
   }
 
-  // Turn off motors after deceleration
-  digitalWrite(in1, LOW);
-  digitalWrite(in2, LOW);
+
+  if (corners >= TOTAL_CORNERS) {
+    if (millis() - finishStart >= FINISH_MS) state = STOPPED;
+  }
+
+  else if (front < CORNER_DISTANCE) {
+    if (dir == 0) dir = (left > right) ? -1 : 1;  
+    turnStart = millis();
+    state = TURN;
+    return;
+  }
+
+
+  float wall = (dir == 1) ? left : right;
+
+  if (dir == 0 || wall < 0) {
+    setSteering(SERVO_CENTER);
+  } else {
+    int trim = constrain((int)(KP * (wall - WALL_TARGET)), -MAX_TRIM, MAX_TRIM);
+    setSteering(SERVO_CENTER - dir * trim);
+  }
+
+  setMotor(CRUISE_SPEED);
 }
