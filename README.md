@@ -15,7 +15,9 @@
 
 Welcome to the GitHub repository of **Team Jawatha Fighters**, competing in the **World Robot Olympiad™ (WRO®) Future Engineers 2026** category. We are a team of students from **Al-Ahsa, Saudi Arabia**, who built a fully custom, autonomous self-driving vehicle built from the ground up for the WRO 2026 challenges. Named after the historic palm groves of our region, our robot combines custom 3D-printed mechanics, modular electronics, and robust control software into one integrated system.
 
-**Team No.:** 5565 | **Region:** Al-Ahsa, Saudi Arabia | **Achievement:** Saudi National Qualifiers
+**Team No.:** 5565  
+**Region:** Al-Ahsa, Saudi Arabia 
+**Achievement:** Saudi National Qualifiers
 
 Performance demonstrations:
 - **Open Challenge** – [Watch on YouTube](https://youtu.be/fPB93x9pTxI)
@@ -53,7 +55,7 @@ Performance demonstrations:
 | **`v-photos/`** | Multi-angle photos of the final robot (v3) and all earlier prototypes |
 | **`t-photos/`** | Photos of team members and coach |
 | **`videos/`** | Performance video files and [YouTube links](videos/Video%20Links) |
-| **`docs/`** | Official WRO Future Engineers competition documentation |
+| **`docs/`** |Jawatha Fighters Engineering notebook|
 
 </div>
 
@@ -73,7 +75,6 @@ Team Jawatha Fighters is made up of two high-school students from Al-Ahsa, guide
 <div align="center">
 <img src="t-photos/Mohammed Almossa.png" alt="Mohammed Almossa" width="180">
 <img src="t-photos/Mohammed_Alsalman.jpeg" alt="Mohammed Alsalman" width="180">
-<img src="t-photos/Hasan Abofares.png" alt="Coach Hasan Abo Fares" width="180">
 <p><em>Left to right: Mohammed Almossa (Software), Mohammed Alsalman (Mechanical & Electronics), Coach Hasan Abo Fares</em></p>
 </div>
 
