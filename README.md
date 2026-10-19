@@ -112,7 +112,7 @@ Complete **three laps** while reacting to red and green traffic pillars, choosin
 **Sensoria** is built around a fully custom 3D-printed chassis — no off-the-shelf frame — designed in Fusion 360 and printed in PLA+.
 
 **Core specifications:**
-- **Dimensions:** 154.7 mm (L) × 120.1 mm (W) × 133.1 mm (H)
+- **Dimensions:** 152.907mm (L) × 104 mm (W) × 133.1 mm (H)
 - **Weight:** ~415 g
 - **Drive:** Rear-wheel drive (RWD), high-traction rubber tires
 - **Steering:** Servo-actuated Ackermann-style steering linkage
