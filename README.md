@@ -16,7 +16,7 @@
 Welcome to the GitHub repository of **Team Jawatha Fighters**, competing in the **World Robot Olympiad™ (WRO®) Future Engineers 2026** category. We are a team of students from **Al-Ahsa, Saudi Arabia**, who built a fully custom, autonomous self-driving vehicle built from the ground up for the WRO 2026 challenges. Named after the historic palm groves of our region, our robot combines custom 3D-printed mechanics, modular electronics, and robust control software into one integrated system.
 
 **Team No.:** 5565  
-**Region:** Al-Ahsa, Saudi Arabia 
+**Region:** Al-Ahsa, Saudi Arabia  
 **Achievement:** Saudi National Qualifiers
 
 Performance demonstrations:
@@ -53,7 +53,7 @@ Performance demonstrations:
 | **`datasheets/`** | Official datasheets for every major component (XMotion V3, Pixy2, MPU6050, HC-SR04, MG90s, FingerTech gearmotor, LiPo, PLA+) |
 | **`part-photos/`** | Photos of the main electronic components |
 | **`v-photos/`** | Multi-angle photos of the final robot (v3) and all earlier prototypes |
-| **`t-photos/`** | Photos of team members and coach |
+| **`t-photos/`** | Photos of team members|
 | **`videos/`** | Performance video files and [YouTube links](videos/Video%20Links) |
 | **`docs/`** |Jawatha Fighters Engineering notebook|
 
