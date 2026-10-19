@@ -7,6 +7,8 @@ const int MOTOR_PWM = 10;
 const int MOTOR_DIR = 12;
 const int SERVO_PIN = 4;
 
+const int BUTTON_PIN = A0;
+
 const int TRIG_L = 5;
 const int ECHO_L = 6;
 const int TRIG_C = 0;
@@ -143,12 +145,19 @@ void setup() {
   pinMode(ECHO_C, INPUT);
   pinMode(TRIG_R, OUTPUT);
   pinMode(ECHO_R, INPUT);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
 
   steering.attach(SERVO_PIN);
   setSteering(SERVO_CENTER);
   stopMotor();
-
   initImu();  
+
+  while (digitalRead(BUTTON_PIN) == HIGH) {
+    stopMotor();
+    setSteering(SERVO_CENTER);
+  }
+
+  delay(200); 
 }
 
 
