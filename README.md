@@ -227,7 +227,7 @@ All software is written in **Arduino C++** and runs on the XMotion V3's ATmega32
 | `src/tests/imu.ino` | MPU6050 IMU test sketch |
 
 <div align="center">
-<img src="src/Open Challenge flowhchart.png" alt="Open Challenge Flowchart" width="350">
+<img src="src/Open Challenge Flowchart.png" alt="Open Challenge Flowchart" width="350">
 <img src="src/Obstacle Challenge Flowchart.png" alt="Obstacle Challenge Flowchart" width="350">
 </div>
 
